@@ -15,33 +15,43 @@
         <!-- 这一步是为了防止 事务管理无效 -->
 
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+        <context:include-filter type="annotation"
+                                expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
     </context:component-scan>
 
+    <context:annotation-config/>
+    <mvc:default-servlet-handler/>
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+
     <!--swagger-ui-->
-    <mvc:annotation-driven />
+    <mvc:annotation-driven/>
     <mvc:resources location="classpath:/META-INF/resources/" mapping="swagger-ui.html"/>
     <mvc:resources location="classpath:/META-INF/resources/webjars/" mapping="/webjars/**"/>
-    <bean class="springfox.documentation.swagger2.configuration.Swagger2DocumentationConfiguration" id="swagger2Config"/>
+    <bean class="springfox.documentation.swagger2.configuration.Swagger2DocumentationConfiguration"
+          id="swagger2Config"/>
 
     <!--避免IE执行AJAX时，返回JSON出现下载文件 -->
-    <bean id="mappingJacksonHttpMessageConverter"
+    <!--<bean id="mappingJacksonHttpMessageConverter"
           class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
         <property name="supportedMediaTypes">
             <list>
                 <value>text/html;charset=UTF-8</value>
             </list>
         </property>
-    </bean>
+    </bean>-->
     <!-- 启动SpringMVC的注解功能，完成请求和注解POJO的映射 -->
-    <bean
+    <!--<bean
             class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
         <property name="messageConverters">
             <list>
-                <ref bean="mappingJacksonHttpMessageConverter"/> <!-- JSON转换器 -->
+                <ref bean="mappingJacksonHttpMessageConverter"/> &lt;!&ndash; JSON转换器 &ndash;&gt;
             </list>
         </property>
-    </bean>
+    </bean>-->
     <!-- 定义跳转的文件的前后缀 ，视图模式配置-->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <!-- 这里的配置我的理解是自动给后面action的方法return的字符串加上前缀和后缀，变成一个 可用的url地址 -->
@@ -59,5 +69,12 @@
         <!-- 内存中的最大值 -->
         <property name="maxInMemorySize" value="40960"/>
     </bean>
+
+    <!-- 引入 权限管理 的配置管理 -->
+    <import resource="application-security.xml" />
+
+
+    <!-- 引入 mybaties 的配置管理 -->
+    <import resource="application-mybatis.xml" />
 
 </beans>

@@ -8,6 +8,8 @@
 
 *.idea
 
+.idea/
+
 *.classpath
 *.project
 

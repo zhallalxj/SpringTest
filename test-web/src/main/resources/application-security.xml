@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:s="http://www.springframework.org/schema/security" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security.xsd
+	http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <s:global-method-security pre-post-annotations="enabled" proxy-target-class="true" />
+
+    <context:component-scan base-package="org.zh.security.security" />
+
+    <s:http pattern="/static/**" security="none" />
+    <s:http pattern="/swagger-ui.html" security="none" />
+
+
+
+
+    <s:http auto-config="false" use-expressions="true"
+            entry-point-ref="authenticationEntryPoint" authentication-manager-ref="userAuthenticationManager" >
+<!--
+        <s:intercept-url pattern="/admin/**" access="hasAuthority('ROLE_STARF')" />
+        <s:intercept-url pattern="/v/guild/**"  access="isAuthenticated()" />
+        <s:intercept-url pattern="/v/cp/**"  access="isAuthenticated()" />
+        <s:intercept-url pattern="/work/log/**"  access="hasAnyAuthority('ROLE_STARF,ROLE_WORK_STARF,ROLE_WORK')" />
+        <s:intercept-url pattern="/v/work/**"  access="hasAnyAuthority('ROLE_WORK_STARF,ROLE_WORK')" />-->
+
+
+        <!-- 表示匿名用户可以访问 -->
+        <!--<s:intercept-url  pattern="/signin.html"  access="isAnonymous()" />-->
+        <s:intercept-url pattern="/**" access="permitAll" />
+
+        <s:form-login
+                login-page="/login.html"
+                login-processing-url="/login"
+                default-target-url="/loginSuccess"
+                username-parameter="username"
+                password-parameter="password"
+        />
+
+        <s:logout invalidate-session="true" logout-success-url="/login.html" delete-cookies="JSESSIONID"/>
+
+        <s:custom-filter ref="loginFilter"  before="FORM_LOGIN_FILTER"/>
+
+        <s:access-denied-handler ref="adminAccessDenied" />
+
+        <s:csrf disabled="true" />
+
+        <s:headers>
+            <s:frame-options disabled="true"/>
+            <s:hsts disabled="true"/>
+        </s:headers>
+
+    </s:http>
+
+
+    <bean id="adminAccessDenied" class="org.zh.security.handler.AdminAccessDeniedHandler">
+        <property name="accessDeniedUrl" value="/denied.html" />
+    </bean>
+
+
+    <bean id="authenticationEntryPoint"
+          class="org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint">
+        <constructor-arg>
+            <map>
+                <entry key-ref="nonAjaxRequestMatcher" value-ref="loginUrlAuthenticationEntryPoint" />
+            </map>
+        </constructor-arg>
+        <property name="defaultEntryPoint" ref="ajaxAuthenticationEntryPoint" />
+    </bean>
+
+    <bean id="ajaxAuthenticationEntryPoint" class="org.zh.security.handler.MyAjaxLoginUrlAuthenticationEntryPoint" />
+
+    <bean id="loginUrlAuthenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <constructor-arg value="/signin.html" />
+    </bean>
+
+    <bean id="nonAjaxRequestMatcher" class="org.zh.security.handler.NonAjaxRequestMatcher" />
+
+
+    <!-- 用户 自定义service -->
+    <bean id="userDetailsService" class="org.zh.service.impl.UserServicesImpl">
+    </bean>
+
+    <bean id="loginFilter" class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter">
+        <property name="authenticationManager" ref="userAuthenticationManager"/>
+        <!--<property name="authenticationSuccessHandler" ref="authenticationSuccessHandler"/>
+        <property name="authenticationFailureHandler" ref="authenticationFailureHandler"/>-->
+    </bean>
+
+    <s:authentication-manager id="userAuthenticationManager">
+        <s:authentication-provider ref="authenticationProvider" />
+    </s:authentication-manager>
+
+    <bean id="authenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <property name="hideUserNotFoundExceptions" value="false" />
+        <property name="userDetailsService" ref="userDetailsService" />
+        <property name="passwordEncoder" ref="encoder" />
+    </bean>
+
+
+    <bean id="encoder"
+          class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+    </bean>
+
+    <!-- 	<s:authentication-manager id="userAuthenticationManager">
+            <s:authentication-provider user-service-ref="userDetailsService">
+                <s:password-encoder ref="encoder" />
+            </s:authentication-provider>
+        </s:authentication-manager> -->
+    <!--<bean id="authenticationSuccessHandler" class="com.niuwan.sys.service.security.SimpleLoginSuccessHandler">
+        <property name="defaultTargetUrl" value="/open"/>
+    </bean>
+
+    <bean id="authenticationFailureHandler" class="com.niuwan.sys.service.security.SimpleLoginFailureHandler">
+        <property name="defaultTargetUrl" value="/loginFail.html"/>
+    </bean>-->
+
+
+</beans>
