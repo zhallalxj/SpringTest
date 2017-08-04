@@ -466,9 +466,9 @@ public class UserExample implements Serializable {
 
     /**
      * 描述:t_user表的实体类
-     *
-     * @author: ZhaoHang
-     * @创建时间: 2017-07-25
+     * @version
+     * @author:  ZhaoHang
+     * @创建时间: 2017-08-02
      */
     public static class Criteria extends GeneratedCriteria implements Serializable {
 

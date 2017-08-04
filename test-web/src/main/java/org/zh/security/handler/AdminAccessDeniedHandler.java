@@ -9,14 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * 
- * @Description:TODO(权限不足处理结果)   
- * @author: level.meng 
- * @date:   2017年2月16日 下午4:55:03   
- *     
- * 注意：本内容仅限于公司内部传阅，禁止外泄以及用于其他的商业目
- */
 public class AdminAccessDeniedHandler implements AccessDeniedHandler {
 
 	@SuppressWarnings("static-access")

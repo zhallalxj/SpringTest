@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.zh.dao.SysApiMapper">
+    <resultMap id="BaseResultMap" type="org.zh.bean.Permission">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="parentId" property="parentid" jdbcType="BIGINT"/>
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
+        <result column="uri" property="uri" jdbcType="VARCHAR"/>
+        <result column="permission_value" property="permissionValue" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="level" property="level" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="selectUserPermissionList" resultMap="BaseResultMap">
+        (
+            SELECT tp.*
+            FROM t_permission AS tp
+                LEFT JOIN t_role_permission AS trp ON tp.id = trp.permission_id
+                LEFT JOIN t_user_role AS tur ON tur.role_id = trp.role_id
+                LEFT JOIN t_user AS tu ON tur.user_id = tu.id
+            WHERE 1 = 1
+                  AND tu.id = #{userId}
+        )
+        UNION
+        (
+            SELECT tp.*
+            FROM t_permission AS tp
+                LEFT JOIN t_role_permission AS trp ON tp.id = trp.permission_id
+                LEFT JOIN t_user AS tu ON tu.id = trp.user_id
+            WHERE 1 = 1
+                  AND tu.id = #{userId}
+        )
+
+    </select>
+
+    <select id="selectPermissionListByRoleId" resultMap="BaseResultMap">
+        SELECT *
+        FROM t_permission AS tp
+            LEFT JOIN t_role_permission AS trp ON tp.id = trp.permission_id
+            LEFT JOIN t_role AS tr ON trp.role_id = tr.id
+        WHERE tr.id = #{roleId}
+    </select>
+
+
+</mapper>

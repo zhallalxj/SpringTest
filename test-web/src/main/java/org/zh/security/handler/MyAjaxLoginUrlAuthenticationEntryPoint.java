@@ -26,13 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-/**
- * @Description:TODO(未认证的情况下 Ajax 请求格式返回 )
- * @author: level.meng
- * @date: 2017年2月16日 下午4:55:13
- * <p>
- * 注意：本内容仅限于公司内部传阅，禁止外泄以及用于其他的商业目
- */
 public class MyAjaxLoginUrlAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @SuppressWarnings("static-access")

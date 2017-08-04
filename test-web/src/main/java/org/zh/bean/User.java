@@ -1,5 +1,8 @@
 package org.zh.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -12,6 +15,7 @@ public class User implements Serializable {
     /**
      * 
      */
+    @JsonProperty(value = "user_name")
     private String userName;
 
     /**
@@ -22,11 +26,15 @@ public class User implements Serializable {
     /**
      * 
      */
+    @JsonProperty(value = "create_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
     /**
      * 
      */
+    @JsonProperty(value = "update_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
 
     /**

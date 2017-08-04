@@ -37,7 +37,7 @@
         <s:form-login
                 login-page="/login.html"
                 login-processing-url="/login"
-                default-target-url="/loginSuccess"
+                default-target-url="/index"
                 username-parameter="username"
                 password-parameter="password"
         />
@@ -76,20 +76,19 @@
     <bean id="ajaxAuthenticationEntryPoint" class="org.zh.security.handler.MyAjaxLoginUrlAuthenticationEntryPoint" />
 
     <bean id="loginUrlAuthenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
-        <constructor-arg value="/signin.html" />
+        <constructor-arg value="/login.html" />
     </bean>
 
     <bean id="nonAjaxRequestMatcher" class="org.zh.security.handler.NonAjaxRequestMatcher" />
 
 
     <!-- 用户 自定义service -->
-    <bean id="userDetailsService" class="org.zh.service.impl.UserServicesImpl">
-    </bean>
+    <bean id="userDetailsService" class="org.zh.service.impl.CustomUserServiceImpl"/>
 
     <bean id="loginFilter" class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter">
         <property name="authenticationManager" ref="userAuthenticationManager"/>
-        <!--<property name="authenticationSuccessHandler" ref="authenticationSuccessHandler"/>
-        <property name="authenticationFailureHandler" ref="authenticationFailureHandler"/>-->
+        <property name="authenticationSuccessHandler" ref="authenticationSuccessHandler"/>
+        <!--<property name="authenticationFailureHandler" ref="authenticationFailureHandler"/>-->
     </bean>
 
     <s:authentication-manager id="userAuthenticationManager">
@@ -112,11 +111,11 @@
                 <s:password-encoder ref="encoder" />
             </s:authentication-provider>
         </s:authentication-manager> -->
-    <!--<bean id="authenticationSuccessHandler" class="com.niuwan.sys.service.security.SimpleLoginSuccessHandler">
-        <property name="defaultTargetUrl" value="/open"/>
+    <bean id="authenticationSuccessHandler" class="org.zh.security.security.SimpleLoginSuccessHandler">
+        <property name="defaultTargetUrl" value="/index"/>
     </bean>
 
-    <bean id="authenticationFailureHandler" class="com.niuwan.sys.service.security.SimpleLoginFailureHandler">
+    <!--<bean id="authenticationFailureHandler" class="com.niuwan.sys.service.security.SimpleLoginFailureHandler">
         <property name="defaultTargetUrl" value="/loginFail.html"/>
     </bean>-->
 
