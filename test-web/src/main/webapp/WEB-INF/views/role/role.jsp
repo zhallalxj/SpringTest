@@ -64,11 +64,12 @@
                 </h4>
             </div>
             <div class="modal-body">
-
+                <input type="hidden" id="rId" name="rId"/>
                 <ul id="treeDemo" class="ztree"></ul>
 
 
             </div>
+            <input type="hidden" id="roleId" name="roleId">
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭
                 </button>
@@ -122,7 +123,7 @@
             },
             "pagingType": "full_numbers",
             "stripeClasses": ["odd", "even"],
-            "order": [[0, "desc"]],
+            "order": [[0, "ASC"]],
             "searching": false,
             "columns": [
                 {"data": "id"},
@@ -156,6 +157,30 @@
 
         });
 
+        $(document).delegate("#delete", "click", function (e) {
+            var id = $(this).data("id");
+
+            layer.confirm('确定删除角色吗？', {
+                btn: ['确定', '取消'] //按钮
+            }, function (index) {
+                $.ajax({
+                    url: "/role/deleteRole/" + id,
+                    dataType: 'json',
+                    type: 'POST',
+                    async: false,
+                    success: function (rsp) {
+                        layer.msg(rsp.message);
+                        if (rsp.status == 10000) {
+                            table.draw();
+                        }
+
+                    }
+                });
+                layer.close(index);
+            });
+        });
+
+
         $(document).delegate("#set", "click", function (e) {
             var id = $(this).data("id");
             $.ajax({
@@ -167,6 +192,7 @@
 
                     if (rsp.status == 10000) {
                         $.fn.zTree.init($("#treeDemo"), setting, rsp.values.data);
+                        $("#rId").val(id);
                         setCheck();
 
                         $('#myModal').modal('show');
@@ -180,6 +206,48 @@
                 }
             });
 
+        });
+
+
+        $("#J_SUBMIT").click(function () {
+            var zTreeObj = $.fn.zTree.getZTreeObj("treeDemo");
+            var changeCount = zTreeObj.getChangeCheckedNodes().length;
+
+            if (changeCount === 0) {
+                layer.msg("修改成功");
+                $('#myModal').modal('hide');
+                return false;
+            }
+
+            var ids = [];
+            $.each(zTreeObj.getCheckedNodes(), function (i, d) {
+                ids[i] = d.id;
+            });
+
+            var id = $("#rId").val();
+
+            /*
+             传递数组到后台：
+             这种方式比较重要的 traditional:true。或者将2、中的 _list参数转换一下$.param(_list,true)。
+             这里其实就是将_list作为传统的方式传递给后台。jQuery默认是做了转换的。
+             据说是为了使用PHP。。。。后台语言而做的。其实也就是自动在参数后面追加了”[]“。
+             */
+            $.ajax({
+                url: "/role/updatePermission/" + id,
+                dataType: 'json',
+                type: 'POST',
+                data: {ids: ids},
+                traditional: true,
+                async: false,
+                success: function (rsp) {
+                    layer.msg(rsp.message);
+
+                    if (rsp.status == 10000) {
+                        $('#myModal').modal('hide');
+                    }
+
+                }
+            });
 
         });
     });
@@ -196,24 +264,7 @@
         }
     };
 
-    var zNodes = [
-        {id: 1, pId: 0, name: "随意勾选 1", open: true},
-        {id: 11, pId: 1, name: "随意勾选 1-1", open: true},
-        {id: 111, pId: 11, name: "随意勾选 1-1-1"},
-        {id: 112, pId: 11, name: "随意勾选 1-1-2"},
-        {id: 12, pId: 1, name: "随意勾选 1-2", open: true},
-        {id: 121, pId: 12, name: "随意勾选 1-2-1"},
-        {id: 122, pId: 12, name: "随意勾选 1-2-2"},
-        {id: 2, pId: 0, name: "随意勾选 2", open: true},
-        {id: 21, pId: 2, name: "随意勾选 2-1"},
-        {id: 22, pId: 2, name: "随意勾选 2-2", open: true},
-        {id: 221, pId: 22, name: "随意勾选 2-2-1"},
-        {id: 222, pId: 22, name: "随意勾选 2-2-2"},
-        {id: 23, pId: 2, name: "随意勾选 2-3"}
-    ];
-
     var code;
-
     function setCheck() {
         var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
             py = $("#py").attr("checked") ? "p" : "",

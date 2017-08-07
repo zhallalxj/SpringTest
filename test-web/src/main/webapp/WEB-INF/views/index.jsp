@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="basePath" value="${pageContext.request.contextPath}"/>
 <!doctype html>
-<html lang="en">
+<html lang="en" style="height: 100%">
 
 <head>
     <title>Dashboard | Klorofil - Free Bootstrap Dashboard Template</title>
@@ -15,9 +15,9 @@
     <%@include file="base/web-css-base.jsp" %>
 </head>
 
-<body>
+<body style="height: 100%">
 <!-- WRAPPER -->
-<div id="wrapper">
+<div id="wrapper" style="height: 100%">
     <!-- NAVBAR -->
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="brand">
@@ -93,22 +93,22 @@
     <!-- LEFT SIDEBAR -->
     <div id="sidebar-nav" class="sidebar">
         <div class="sidebar-scroll">
-            <iframe id="main" name="main" height="100%" width="100%"
+            <iframe id="main" name="main" scrolling="yes" height="100%" width="100%"
                     src="${basePath}/left.html"
-                    border="0" frameborder="0" scrolling="no"> 浏览器不支持嵌入式框架，或被配置为不显示嵌入式框架。
+                    border="0" frameborder="0"> 浏览器不支持嵌入式框架，或被配置为不显示嵌入式框架。
             </iframe>
 
         </div>
     </div>
     <!-- END LEFT SIDEBAR -->
     <!-- MAIN -->
-    <div class="main">
+    <div class="main" style="height: 100%">
         <!-- MAIN CONTENT -->
-        <div class="main-content">
-            <div class="container-fluid">
+        <div id="div1" class="main-content" style="height: 100%">
+            <div id="div2" class="container-fluid" style="height: 100%">
                 <!-- OVERVIEW -->
-                <iframe id="center" name="center" style="height: 100%;width: 100%;min-height: 500px"
-                        border="0" frameborder="0" scrolling="no"> 浏览器不支持嵌入式框架，或被配置为不显示嵌入式框架。
+                <iframe id="center" name="center" style="height: 100%;width: 100%"
+                        border="0" frameborder="0" scrolling="yes"> 浏览器不支持嵌入式框架，或被配置为不显示嵌入式框架。
                 </iframe>
 
             </div>
@@ -126,6 +126,11 @@
 <!-- END WRAPPER -->
 <!-- Javascript -->
 <%@include file="base/web-js-base.jsp" %>
-
+<script>
+    /*$("#center").load(function(){
+        var mainheight = $(this).contents().find("body").height()+30;
+        $(this).height(mainheight);
+    });*/
+</script>
 </body>
 </html>
