@@ -80,8 +80,6 @@ public class RoleController {
 
         List<Map<String, Object>> list = new LinkedList<>();
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("var data = [];");
         for (Permission permission : allPermissions) {
             boolean flag = false;
             for (Permission p : rolePermissions) {//用户拥有的权限

@@ -1,5 +1,8 @@
 package org.zh.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -17,6 +20,8 @@ public class Permission implements Serializable {
     /**
      * 
      */
+    @JsonProperty(value = "parent_id")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Long parentid;
 
     /**
@@ -32,6 +37,8 @@ public class Permission implements Serializable {
     /**
      * 
      */
+    @JsonProperty(value = "permission_value")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private String permissionValue;
 
     /**
@@ -47,11 +54,15 @@ public class Permission implements Serializable {
     /**
      * 
      */
+    @JsonProperty(value = "create_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
     /**
      * 
      */
+    @JsonProperty(value = "modify_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date modifyTime;
 
     /**

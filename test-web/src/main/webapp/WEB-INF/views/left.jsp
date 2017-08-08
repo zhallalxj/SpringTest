@@ -25,9 +25,14 @@
                            varStatus="stut">
                     <c:if test="${key.type eq 0}">
                         <li style="background-color: #2B333E">
-                            <a href="#subPages" data-toggle="collapse"
-                               <c:if test="${stut.index == 0}">class="active"</c:if> ><i class="lnr lnr-file-empty"></i>
-                                <span>${stut.index} ${key.name}</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+                            <c:set var="icon" value="lnr-file-empty"/>
+                            <c:if test="${not empty key.icon}">
+                                <c:set var="icon" value="${key.icon}"/>
+                            </c:if>
+
+                            <a href="${key.uri}" data-toggle="collapse"
+                               <c:if test="${stut.index == 0}">class="active"</c:if> ><i class="lnr ${icon}"></i>
+                                <span>${key.name}</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
                             <ul class="nav">
                                 <c:forEach items="${permissions}" var="k">
                                     <c:if test="${k.parentid eq key.id}">
