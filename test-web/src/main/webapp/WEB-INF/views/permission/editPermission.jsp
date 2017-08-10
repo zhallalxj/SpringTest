@@ -138,7 +138,7 @@
                     &times;
                 </button>
                 <h4 class="modal-title" style="text-align: center;" id="myModalLabel">
-                    选择菜单
+                    选择权限
                 </h4>
             </div>
             <div class="modal-body">

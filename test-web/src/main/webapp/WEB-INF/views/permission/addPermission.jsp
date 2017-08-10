@@ -29,35 +29,75 @@
         <div class="row">
             <div class="col-lg-12">
 
-                <form:form action="${basePath}/role/addRole" method="POST" modelAttribute="role"
-                           name="J_ROLE_ADD_FORM" id="J_ROLE_ADD_FORM">
-
+                <form:form action="${basePath}/permission/addPermission" method="POST" modelAttribute="permission"
+                           name="J_PERMISSION_ADD_FORM" id="J_PERMISSION_ADD_FORM">
                     <!-- 礼包创建 -->
                     <div class="col-lg-12">
 
                         <div class="form-group col-sm-12">
 
-                            <label class="col-sm-2 control-label">角色名：</label>
+                            <label class="col-sm-2 control-label">权限名：</label>
                             <div class=" input-group col-sm-4">
-                                <input type="text" name="name" class="form-control" id="name" placeholder="角色名">
-                            </div>
-                        </div>
-                        <div class="form-group col-sm-12">
-                            <label class=" col-sm-2 control-label">角色值：</label>
-                            <div class=" input-group col-sm-4">
-
-                                <input type="text" class="form-control" name="roleValue" id="roleValue"
-                                       placeholder="角色值">
-
+                                <input type="text" name="name" class="form-control" id="name" placeholder="权限名">
                             </div>
                         </div>
 
+
                         <div class="form-group col-sm-12">
-                            <label class=" col-sm-2 control-label">角色描述：</label>
+                            <label class=" col-sm-2 control-label">URL：</label>
                             <div class=" input-group col-sm-4">
 
-                                <input type="text" class="form-control" name="description" id="description"
-                                       placeholder="角色描述">
+                                <input type="text" class="form-control" name="uri" id="uri" placeholder="URL">
+
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12">
+                            <label class=" col-sm-2 control-label">权限值：</label>
+                            <div class=" input-group col-sm-4">
+
+                                <input type="text" class="form-control" name="permissionValue" id="permissionValue"
+                                       placeholder="权限值">
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-group col-sm-12">
+                            <label class=" col-sm-2 control-label">父级菜单：</label>
+                            <div class=" input-group col-sm-4">
+
+                                <input type="text" class="form-control" name="parent" id="parent"
+                                       placeholder="父级菜单" readonly>
+                                <input type="hidden" id="parentid" name="parentid">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12">
+                            <label class=" col-sm-2 control-label">icon：</label>
+                            <div class=" input-group col-sm-4">
+
+                                <input type="text" class="form-control" name="icon" id="icon"
+                                       placeholder="icon">
+
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12">
+                            <label class=" col-sm-2 control-label">类型：</label>
+                            <div class=" input-group col-sm-4">
+                                <label class="fancy-radio">
+                                    <input name="type" value="0" type="radio">
+                                    <span><i></i>目录</span>
+                                </label>
+                                <label class="fancy-radio">
+                                    <input name="type" value="1" type="radio" checked>
+                                    <span><i></i>菜单</span>
+                                </label>
+                                <label class="fancy-radio">
+                                    <input name="type" value="2" type="radio">
+                                    <span><i></i>按钮</span>
+                                </label>
 
                             </div>
                         </div>
@@ -84,58 +124,196 @@
     </div>
 </div>
 
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" style="text-align: center;" id="myModalLabel">
+                    选择权限
+                </h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="rId" name="rId"/>
+                <ul id="permissionTree" class="ztree"></ul>
+
+
+            </div>
+            <input type="hidden" id="roleId" name="roleId">
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" id="J_SUBMIT">
+                    确认
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
 <!-- END WRAPPER -->
 <!-- Javascript -->
 <%@include file="../base/web-js-base.jsp" %>
 <script src="${basePath}/static/assets/vendor/jquery/jquery-form.js"></script>
 <script src="${basePath}/static/assets/vendor/bootstrapValidator/js/bootstrapValidator.min.js"></script>
+<script src="${basePath}/static/assets/vendor/jquery/jquery.ztree.core.min.js"></script>
+<script src="${basePath}/static/assets/vendor/jquery/jquery.ztree.excheck.min.js"></script>
 <script>
 
-    $('#J_ROLE_ADD_FORM').bootstrapValidator({
-        message: 'This value is not valid',
-        fields: {
-            name: {
-                validators: {
-                    notEmpty: {
-                        message: '角色名不能为空'
-                    }
-                }
-            },
-            roleValue: {
-                validators: {
-                    notEmpty: {
-                        message: '角色值不能为空'
-                    },
-                    regexp: {//匹配规则
-                        regexp: /^\+?[A-Za-z_]*$/,
-                        message: '只能输入字母和下划线'
-                    }
-                }
+    var setting = {
+        check: {
+            enable: false
+        },
+        data: {
+            simpleData: {
+                enable: true
             }
-
+        },
+        callback: {
+            onClick: onClick
         }
-    }).on('success.form.bv', function (e) {
+    };
 
-        e.preventDefault();
-        var $form = $(e.target);
-        var bv = $form.data('bootstrapValidator');
+    var zTreeSelectId;
+    var zTreeSelectName;
 
-        $('#J_ROLE_ADD_FORM').ajaxSubmit({
-            semantic: true,
-            dataType: 'json',
-            success: function (data) {
-                console.info(data);
-                layer.msg(data.message);
-                if (data.status === 10000) {
+    function onClick(event, treeId, treeNode, clickFlag) {
+        var treeObj = $.fn.zTree.getZTreeObj('permissionTree');
+        treeObj.cancelSelectedNode();
+        var node = treeObj.getNodeByParam("id", treeNode.id);
+        treeObj.selectNode(node);
+        zTreeSelectId = treeNode.id;
+        zTreeSelectName = treeNode.name;
+    }
 
-                    setTimeout(function () {
-                        window.location.href = '/role/list.html';
-                    }, 1000);
 
-                }
-            }
+    var code;
+    function setCheck() {
+        var zTree = $.fn.zTree.getZTreeObj("permissionTree"),
+            py = $("#py").attr("checked") ? "p" : "",
+            sy = $("#sy").attr("checked") ? "s" : "",
+            pn = $("#pn").attr("checked") ? "p" : "",
+            sn = $("#sn").attr("checked") ? "s" : "",
+            type = {"Y": py + sy, "N": pn + sn};
+        setting.check.chkboxType = {"Y": "ps", "N": "ps"};
+        //zTree.setting.check.chkboxType = type;
+        showCode('setting.check.chkboxType = { "Y" : "' + type.Y + '", "N" : "' + type.N + '" };');
+    }
+    function showCode(str) {
+        if (!code) code = $("#code");
+        code.empty();
+        code.append("<li>" + str + "</li>");
+    }
+
+    $(function () {
+
+        $("#J_SUBMIT").click(function () {
+            $("#parentid").val(zTreeSelectId);
+            $("#parent").val(zTreeSelectName);
+            $('#myModal').modal('hide');
         });
 
+        $("#parent").click(function () {
+
+            var id = $("#parentid").val();
+
+            $.ajax({
+                url: "/permission/getAllPermission",
+                dataType: 'json',
+                type: 'POST',
+                async: false,
+                success: function (rsp) {
+
+                    if (rsp.status == 10000) {
+                        $.fn.zTree.init($("#permissionTree"), setting, rsp.values.data);
+                        var zTree = $.fn.zTree.getZTreeObj("permissionTree");
+                        var node = zTree.getNodeByParam("id", id);
+                        zTree.selectNode(node);
+
+                        setCheck();
+
+                        $('#myModal').modal('show');
+                        $('#myModal').on('show.bs.modal', function () {
+
+                        });
+                    } else {
+                        layer.msg(rsp.message);
+                    }
+
+                }
+            });
+        });
+
+
+        $('#J_PERMISSION_ADD_FORM').bootstrapValidator({
+            message: 'This value is not valid',
+            fields: {
+                name: {
+                    validators: {
+                        notEmpty: {
+                            message: '权限名不能为空'
+                        }
+                    }
+                },
+                permissionValue: {
+                    validators: {
+                        notEmpty: {
+                            message: '权限值不能为空'
+                        },
+                        regexp: {//匹配规则
+                            regexp: /^\+?[A-Za-z_]*$/,
+                            message: '只能输入字母和下划线'
+                        }
+                    }
+                },
+                uri: {
+                    validators: {
+                        notEmpty: {
+                            message: 'URL不能为空'
+                        }
+                    }
+                },
+                parentid: {
+                    validators: {
+                        notEmpty: {
+                            message: '父级菜单不能为空'
+                        }
+                    }
+                },
+                type: {
+                    validators: {
+                        notEmpty: {
+                            message: '类型不能为空'
+                        }
+                    }
+                }
+
+            }
+        }).on('success.form.bv', function (e) {
+
+            e.preventDefault();
+            var $form = $(e.target);
+            var bv = $form.data('bootstrapValidator');
+
+            $('#J_PERMISSION_ADD_FORM').ajaxSubmit({
+                semantic: true,
+                dataType: 'json',
+                success: function (data) {
+                    console.info(data);
+                    layer.msg(data.message);
+                    if (data.status === 10000) {
+
+                        setTimeout(function () {
+                            window.location.href = '/permission/list.html';
+                        }, 1000);
+
+                    }
+                }
+            });
+
+        });
     });
 
 </script>

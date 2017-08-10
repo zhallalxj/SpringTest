@@ -37,11 +37,18 @@
     </select>
 
     <select id="selectPermissionListByRoleId" resultMap="BaseResultMap">
-        SELECT *
+        SELECT tp.*
         FROM t_permission AS tp
             LEFT JOIN t_role_permission AS trp ON tp.id = trp.permission_id
             LEFT JOIN t_role AS tr ON trp.role_id = tr.id
         WHERE tr.id = #{roleId}
+    </select>
+
+    <select id="selectPermissionListByUserId" resultMap="BaseResultMap">
+        SELECT tp.*
+        FROM t_permission AS tp
+            LEFT JOIN t_role_permission AS trp ON tp.id = trp.permission_id
+        WHERE trp.user_id = #{userId}
     </select>
 
 

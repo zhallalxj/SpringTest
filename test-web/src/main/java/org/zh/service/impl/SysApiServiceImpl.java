@@ -31,4 +31,9 @@ public class SysApiServiceImpl implements ISysApiService {
     public List<Permission> selectPermissionListByRoleId(Long roleId) {
         return sysApiMapper.selectPermissionListByRoleId(roleId);
     }
+
+    @Override
+    public List<Permission> selectPermissionListByUserId(Long userId) {
+        return sysApiMapper.selectPermissionListByUserId(userId);
+    }
 }

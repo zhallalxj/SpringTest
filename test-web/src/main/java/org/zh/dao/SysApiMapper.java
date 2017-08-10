@@ -19,4 +19,6 @@ public interface SysApiMapper {
 
     List<Permission> selectPermissionListByRoleId(@Param("roleId") Long roleId);
 
+    List<Permission> selectPermissionListByUserId(@Param("userId")Long userId);
+
 }

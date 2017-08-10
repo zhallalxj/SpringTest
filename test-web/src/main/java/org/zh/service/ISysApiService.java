@@ -19,4 +19,5 @@ public interface ISysApiService {
 
     List<Permission> selectPermissionListByRoleId(Long roleId);
 
+    List<Permission> selectPermissionListByUserId(Long userId);
 }
