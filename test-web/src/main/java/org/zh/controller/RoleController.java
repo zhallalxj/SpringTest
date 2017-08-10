@@ -8,6 +8,7 @@ import org.zh.constants.PermissionUtils;
 import org.zh.service.IPermissionService;
 import org.zh.service.IRoleService;
 import org.zh.service.ISysApiService;
+import org.zh.service.IUserRoleService;
 import org.zh.utils.CustomResponse;
 import org.zh.utils.DataTableJSONResponse;
 import org.zh.utils.PageRequest;
@@ -37,6 +38,9 @@ public class RoleController {
 
     @Autowired
     private IPermissionService permissionService;
+
+    @Autowired
+    private IUserRoleService userRoleService;
 
     @Autowired
     private DataTableJSONResponse dataTableJSONResponse;
@@ -135,5 +139,43 @@ public class RoleController {
         return customResponse.getSuccessJson("添加成功");
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/getUserRoleId/{userId}", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+    public String getUserRoleId(@PathVariable String userId) {
+        CustomResponse customResponse = new CustomResponse();
+
+        UserRoleExample userRoleExample = new UserRoleExample();
+        UserRoleExample.Criteria criteria = userRoleExample.createCriteria();
+        criteria.andUserIdEqualTo(Long.valueOf(userId));
+
+        UserRole userRole = userRoleService.selectFirstByExample(userRoleExample);
+        customResponse.addValue("userRole", userRole);
+        return customResponse.toJSONString();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/updateUserRole/{userId}/{roleId}", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+    public String updateUserRole(@PathVariable String userId, @PathVariable String roleId) {
+        CustomResponse customResponse = new CustomResponse();
+
+        UserRoleExample userRoleExample = new UserRoleExample();
+        UserRoleExample.Criteria criteria = userRoleExample.createCriteria();
+        criteria.andUserIdEqualTo(Long.valueOf(userId));
+
+        UserRole userRole = userRoleService.selectFirstByExample(userRoleExample);
+        int result;
+        if (userRole == null) {
+            userRole = new UserRole();
+            userRole.setUserId(Long.valueOf(userId));
+            userRole.setRoleId(Long.valueOf(roleId));
+            result = userRoleService.insertSelective(userRole);
+        } else {
+            userRole.setRoleId(Long.valueOf(roleId));
+            result = userRoleService.updateByPrimaryKeySelective(userRole);
+        }
+        if (result == 0) return customResponse.getErrorJson("修改角色失败");
+
+        return customResponse.getSuccessJson("修改角色成功，重新登录生效");
+    }
 
 }

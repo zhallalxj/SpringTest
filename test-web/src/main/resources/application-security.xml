@@ -16,12 +16,12 @@
 
     <s:http pattern="/static/**" security="none" />
     <s:http pattern="/swagger-ui.html" security="none" />
-
+    <s:http pattern="/denied.jsp" security="none" />
 
 
 
     <s:http auto-config="false" use-expressions="true"
-            entry-point-ref="authenticationEntryPoint" authentication-manager-ref="userAuthenticationManager" >
+            entry-point-ref="authenticationEntryPoint" authentication-manager-ref="userAuthenticationManager">
 <!--
         <s:intercept-url pattern="/admin/**" access="hasAuthority('ROLE_STARF')" />
         <s:intercept-url pattern="/v/guild/**"  access="isAuthenticated()" />
@@ -33,6 +33,7 @@
         <!-- 表示匿名用户可以访问 -->
         <!--<s:intercept-url  pattern="/signin.html"  access="isAnonymous()" />-->
         <s:intercept-url pattern="/**" access="permitAll" />
+        <s:access-denied-handler error-page="/denied.jsp" />
 
         <s:form-login
                 login-page="/login.html"
@@ -46,7 +47,7 @@
 
         <s:custom-filter ref="loginFilter"  before="FORM_LOGIN_FILTER"/>
 
-        <s:access-denied-handler ref="adminAccessDenied" />
+        <!--<s:access-denied-handler ref="adminAccessDenied" />-->
 
         <s:csrf disabled="true" />
 
@@ -55,12 +56,16 @@
             <s:hsts disabled="true"/>
         </s:headers>
 
+        <s:custom-filter ref="mySecurityFilter" before="FILTER_SECURITY_INTERCEPTOR"/>
     </s:http>
 
+    <s:authentication-manager alias="myAuthenticationManager">
+        <s:authentication-provider user-service-ref="userDetailsService" />
+    </s:authentication-manager>
 
-    <bean id="adminAccessDenied" class="org.zh.security.handler.AdminAccessDeniedHandler">
+    <!--<bean id="adminAccessDenied" class="org.zh.security.handler.AdminAccessDeniedHandler">
         <property name="accessDeniedUrl" value="/denied.html" />
-    </bean>
+    </bean>-->
 
 
     <bean id="authenticationEntryPoint"

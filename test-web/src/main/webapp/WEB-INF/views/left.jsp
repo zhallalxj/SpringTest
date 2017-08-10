@@ -23,20 +23,32 @@
 
                 <c:forEach items="${permissions}" var="key"
                            varStatus="stut">
-                    <c:if test="${key.type eq 0}">
-                        <li style="background-color: #2B333E">
+                    <c:if test="${key.parentid eq 10010}">
+                        <li style="background-color: #2B333E" data-id="${key.id}">
                             <c:set var="icon" value="lnr-file-empty"/>
                             <c:if test="${not empty key.icon}">
                                 <c:set var="icon" value="${key.icon}"/>
                             </c:if>
 
-                            <a href="${key.uri}" data-toggle="collapse"
-                               <c:if test="${stut.index == 0}">class="active"</c:if> ><i class="lnr ${icon}"></i>
-                                <span>${key.name}</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+                            <c:choose>
+                                <c:when test="${key.type == 1}">
+                                    <a href="${key.uri}" target="center"
+                                       <c:if test="${stut.index == 0}">class="active"</c:if>><i
+                                            class="lnr lnr-home"></i> <span>${key.name}</span></a>
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="${key.uri}" data-toggle="collapse"
+                                       <c:if test="${stut.index == 0}">class="active"</c:if> ><i
+                                            class="lnr ${icon}"></i>
+                                        <span>${key.name}</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+                                </c:otherwise>
+                            </c:choose>
+
                             <ul class="nav">
                                 <c:forEach items="${permissions}" var="k">
                                     <c:if test="${k.parentid eq key.id}">
-                                        <li><a target="center" href="${pageContext.servletContext.contextPath}${k.uri}" class="">${k.name}</a></li>
+                                        <li><a target="center" href="${pageContext.servletContext.contextPath}${k.uri}"
+                                               class="">${k.name}</a></li>
                                     </c:if>
                                 </c:forEach>
                             </ul>

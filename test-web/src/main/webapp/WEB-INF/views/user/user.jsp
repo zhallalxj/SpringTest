@@ -28,7 +28,7 @@
         <div class="row">
             <div class="col-lg-12">
 
-                <table width="100%" class="display table  table-bordered table-hover"  id="dataTables-example">
+                <table width="100%" class="display table  table-bordered table-hover" id="dataTables-example">
                     <thead>
                     <tr>
 
@@ -78,6 +78,47 @@
     </div><!-- /.modal -->
 </div>
 
+<div class="modal fade" id="RoleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 60%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" style="text-align: center;" id="RoleModalLabel">
+                    选择角色
+                </h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="rUserId" name="rUserId"/>
+                <table width="100%" class="display table  table-bordered table-hover" id="dataTables-role-example">
+                    <thead>
+                    <tr>
+
+                        <th>ID</th>
+                        <th>角色名称</th>
+                        <th>角色值</th>
+                        <th>角色描述</th>
+                        <th width="100px">操作</th>
+                    </tr>
+                    </thead>
+
+
+                </table>
+
+            </div>
+            <input type="hidden" id="primaryRoleId" name="primaryRoleId">
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <%--<button type="button" class="btn btn-primary" id="J_ROLE_SUBMIT">
+                    确认
+                </button>--%>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
 <!-- END WRAPPER -->
 <!-- Javascript -->
 <%@include file="../base/web-js-base.jsp" %>
@@ -93,17 +134,21 @@
             "processing": true,
             "serverSide": true,
             "ajax": {
-                "url":  '/user/listAjax',
+                "url": '/user/listAjax',
                 "type": 'POST',
                 "dataType": "json",
                 "statusCode": {
-                    404: function() {layer.msg("您访问的页面不存在");},
-                    500: function() {layer.msg("未知错误，请稍后再试");}
+                    404: function () {
+                        layer.msg("您访问的页面不存在");
+                    },
+                    500: function () {
+                        layer.msg("未知错误，请稍后再试");
+                    }
 
                 },
-                "dataFilter": function(result, type){
-                    var json = jQuery.parseJSON( result );
-                    if(json.status !=10000){
+                "dataFilter": function (result, type) {
+                    var json = jQuery.parseJSON(result);
+                    if (json.status != 10000) {
                         layer.msg(json.message);
                         return false;
                     }
@@ -143,7 +188,7 @@
             ],
 
             "language": {
-                url:  '/static/assets/vendor/datatables/i18n/Chinese.json'
+                url: '/static/assets/vendor/datatables/i18n/Chinese.json'
             }
         });
 
@@ -216,9 +261,133 @@
 
         });
 
+        var roleTable = $('#dataTables-role-example').DataTable({
+            "responsive": true,
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": '/role/listAjax',
+                "type": 'POST',
+                "dataType": "json",
+                "statusCode": {
+                    404: function () {
+                        layer.msg("您访问的页面不存在");
+                    },
+                    500: function () {
+                        layer.msg("未知错误，请稍后再试");
+                    }
+
+                },
+                "dataFilter": function (result, type) {
+                    var json = jQuery.parseJSON(result);
+                    if (json.status != 10000) {
+                        layer.msg(json.message);
+                        return false;
+                    }
+                    return result;
+                },
+
+                "data": function (d) {
+                    //添加额外的参数传给服务器
+                }
+            },
+            "pagingType": "full_numbers",
+            "stripeClasses": ["odd", "even"],
+            "order": [[0, "ASC"]],
+            "searching": false,
+            "columns": [
+                {"data": "id"},
+                {"data": "name"},
+                {"data": "role_value"},
+                {"data": "description"}
+
+            ], columnDefs: [
+
+                {
+                    "targets": 4,
+                    "data": null,
+                    "searchable": false,
+                    "bSortable": false,
+                    "render": function (data, type, row, meta) {
+                        var html = "";
+
+                        if (row.id == $("#primaryRoleId").val()) {
+                            html = "<button class='btn btn-primary btn-xs' disabled>当前角色</button>&nbsp";
+                        } else {
+                            html = "<button id='setUserRole' class='btn btn-primary btn-xs' data-id=" + row.id + ">选择</button>&nbsp";
+                        }
+
+                        return html
+                    }
+                }
+            ],
+
+            "language": {
+                url: '/static/assets/vendor/datatables/i18n/Chinese.json'
+            }
+
+        });
+
+        $(document).delegate("#setUserRole", "click", function (e) {
+            var roleId = $(this).data("id");
+            var userId = $("#rUserId").val();
+
+            layer.confirm('确定更新用户角色吗？', {
+                btn: ['确定', '取消'] //按钮
+            }, function (index) {
+
+                $.ajax({
+                    url: "/role/updateUserRole/" + userId + "/" + roleId,
+                    dataType: 'json',
+                    type: 'POST',
+                    async: false,
+                    success: function (rsp) {
+                        layer.msg(rsp.message);
+                        if (rsp.status == 10000) {
+                            $('#RoleModal').modal('hide');
+                        }
+
+                    }
+                });
+                layer.close(index);
+
+            });
+
+
+        });
+
+        $(document).delegate("#setRole", "click", function (e) {
+            var id = $(this).data("id");
+
+            $.ajax({
+                url: "/role/getUserRoleId/" + id,
+                dataType: 'json',
+                type: 'POST',
+                async: false,
+                success: function (rsp) {
+
+                    if (rsp.status == 10000) {
+
+                        if(rsp.values != undefined){
+                            $("#primaryRoleId").val(rsp.values.userRole.roleId);
+                        }
+
+
+                        $("#rUserId").val(id);
+                        $('#RoleModal').modal('show');
+                        roleTable.draw();
+                    } else {
+                        layer.msg(rsp.message);
+                    }
+
+                }
+            });
+
+
+        });
+
 
     });
-
 
 
     var setting = {
