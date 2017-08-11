@@ -130,6 +130,14 @@ public class PermissionController {
         permission.setCreateTime(new Date());
         permission.setModifyTime(new Date());
 
+        PermissionExample permissionExample = new PermissionExample();
+        permissionExample.setOrderByClause("level DESC");
+        Permission per = permissionService.selectFirstByExample(permissionExample);
+        if (per == null) {
+            permission.setLevel(1);
+        } else {
+            permission.setLevel(per.getLevel() + 1);
+        }
 
         int result = permissionService.insertSelective(permission);
 
@@ -139,7 +147,7 @@ public class PermissionController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/getUserPermissionList/{userId}", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+    @RequestMapping(value = "/getUserPermissionList/{userId}", method = {RequestMethod.GET, RequestMethod.POST}, produces = "application/json;charset=utf-8")
     public String getUserPermissionList(@PathVariable String userId) {
         CustomResponse customResponse = new CustomResponse();
 
