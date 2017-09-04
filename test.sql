@@ -142,3 +142,10 @@ CREATE TABLE `t_user_role` (
 -- ----------------------------
 INSERT INTO `t_user_role` VALUES ('1', '1', '12');
 INSERT INTO `t_user_role` VALUES ('51', '2', '1');
+
+ALTER TABLE `t_user`
+ADD COLUMN `salt`  varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `password`,
+ADD COLUMN `token`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `salt`,
+ADD COLUMN `expire_date`  datetime NULL DEFAULT NULL AFTER `token`;
+
+

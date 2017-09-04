@@ -343,6 +343,206 @@ public class UserExample implements Serializable {
             return (Criteria) this;
         }
 
+        public Criteria andSaltIsNull() {
+            addCriterion("salt is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSaltIsNotNull() {
+            addCriterion("salt is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSaltEqualTo(String value) {
+            addCriterion("salt =", value, "salt");
+            return (Criteria) this;
+        }
+
+        public Criteria andSaltNotEqualTo(String value) {
+            addCriterion("salt <>", value, "salt");
+            return (Criteria) this;
+        }
+
+        public Criteria andSaltGreaterThan(String value) {
+            addCriterion("salt >", value, "salt");
+            return (Criteria) this;
+        }
+
+        public Criteria andSaltGreaterThanOrEqualTo(String value) {
+            addCriterion("salt >=", value, "salt");
+            return (Criteria) this;
+        }
+
+        public Criteria andSaltLessThan(String value) {
+            addCriterion("salt <", value, "salt");
+            return (Criteria) this;
+        }
+
+        public Criteria andSaltLessThanOrEqualTo(String value) {
+            addCriterion("salt <=", value, "salt");
+            return (Criteria) this;
+        }
+
+        public Criteria andSaltLike(String value) {
+            addCriterion("salt like", value, "salt");
+            return (Criteria) this;
+        }
+
+        public Criteria andSaltNotLike(String value) {
+            addCriterion("salt not like", value, "salt");
+            return (Criteria) this;
+        }
+
+        public Criteria andSaltIn(List<String> values) {
+            addCriterion("salt in", values, "salt");
+            return (Criteria) this;
+        }
+
+        public Criteria andSaltNotIn(List<String> values) {
+            addCriterion("salt not in", values, "salt");
+            return (Criteria) this;
+        }
+
+        public Criteria andSaltBetween(String value1, String value2) {
+            addCriterion("salt between", value1, value2, "salt");
+            return (Criteria) this;
+        }
+
+        public Criteria andSaltNotBetween(String value1, String value2) {
+            addCriterion("salt not between", value1, value2, "salt");
+            return (Criteria) this;
+        }
+
+        public Criteria andTokenIsNull() {
+            addCriterion("token is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTokenIsNotNull() {
+            addCriterion("token is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTokenEqualTo(String value) {
+            addCriterion("token =", value, "token");
+            return (Criteria) this;
+        }
+
+        public Criteria andTokenNotEqualTo(String value) {
+            addCriterion("token <>", value, "token");
+            return (Criteria) this;
+        }
+
+        public Criteria andTokenGreaterThan(String value) {
+            addCriterion("token >", value, "token");
+            return (Criteria) this;
+        }
+
+        public Criteria andTokenGreaterThanOrEqualTo(String value) {
+            addCriterion("token >=", value, "token");
+            return (Criteria) this;
+        }
+
+        public Criteria andTokenLessThan(String value) {
+            addCriterion("token <", value, "token");
+            return (Criteria) this;
+        }
+
+        public Criteria andTokenLessThanOrEqualTo(String value) {
+            addCriterion("token <=", value, "token");
+            return (Criteria) this;
+        }
+
+        public Criteria andTokenLike(String value) {
+            addCriterion("token like", value, "token");
+            return (Criteria) this;
+        }
+
+        public Criteria andTokenNotLike(String value) {
+            addCriterion("token not like", value, "token");
+            return (Criteria) this;
+        }
+
+        public Criteria andTokenIn(List<String> values) {
+            addCriterion("token in", values, "token");
+            return (Criteria) this;
+        }
+
+        public Criteria andTokenNotIn(List<String> values) {
+            addCriterion("token not in", values, "token");
+            return (Criteria) this;
+        }
+
+        public Criteria andTokenBetween(String value1, String value2) {
+            addCriterion("token between", value1, value2, "token");
+            return (Criteria) this;
+        }
+
+        public Criteria andTokenNotBetween(String value1, String value2) {
+            addCriterion("token not between", value1, value2, "token");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateIsNull() {
+            addCriterion("expire_date is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateIsNotNull() {
+            addCriterion("expire_date is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateEqualTo(Date value) {
+            addCriterion("expire_date =", value, "expireDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateNotEqualTo(Date value) {
+            addCriterion("expire_date <>", value, "expireDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateGreaterThan(Date value) {
+            addCriterion("expire_date >", value, "expireDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateGreaterThanOrEqualTo(Date value) {
+            addCriterion("expire_date >=", value, "expireDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateLessThan(Date value) {
+            addCriterion("expire_date <", value, "expireDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateLessThanOrEqualTo(Date value) {
+            addCriterion("expire_date <=", value, "expireDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateIn(List<Date> values) {
+            addCriterion("expire_date in", values, "expireDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateNotIn(List<Date> values) {
+            addCriterion("expire_date not in", values, "expireDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateBetween(Date value1, Date value2) {
+            addCriterion("expire_date between", value1, value2, "expireDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andExpireDateNotBetween(Date value1, Date value2) {
+            addCriterion("expire_date not between", value1, value2, "expireDate");
+            return (Criteria) this;
+        }
+
         public Criteria andCreateTimeIsNull() {
             addCriterion("create_time is null");
             return (Criteria) this;
@@ -468,7 +668,7 @@ public class UserExample implements Serializable {
      * 描述:t_user表的实体类
      * @version
      * @author:  ZhaoHang
-     * @创建时间: 2017-08-02
+     * @创建时间: 2017-08-25
      */
     public static class Criteria extends GeneratedCriteria implements Serializable {
 

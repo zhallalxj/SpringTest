@@ -7,116 +7,130 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class User implements Serializable {
-    /**
-     * 
-     */
+
     private Long id;
 
-    /**
-     * 
-     */
     @JsonProperty(value = "user_name")
     private String userName;
 
-    /**
-     * 
-     */
     private String password;
 
-    /**
-     * 
-     */
+    private String salt;
+
+    private String token;
+
+    @JsonProperty(value = "expire_date")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date expireDate;
+
     @JsonProperty(value = "create_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
-    /**
-     * 
-     */
     @JsonProperty(value = "update_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
 
-    /**
-     * t_user
-     */
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 
-     * @return id 
-     */
     public Long getId() {
         return id;
     }
 
-    /**
-     * 
-     * @param id 
-     */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /**
-     * 
-     * @return user_name 
-     */
     public String getUserName() {
         return userName;
     }
 
     /**
-     * 
-     * @param userName 
+     * @param userName
      */
     public void setUserName(String userName) {
         this.userName = userName == null ? null : userName.trim();
     }
 
     /**
-     * 
-     * @return password 
+     * @return password
      */
     public String getPassword() {
         return password;
     }
 
     /**
-     * 
-     * @param password 
+     * @param password
      */
     public void setPassword(String password) {
         this.password = password == null ? null : password.trim();
     }
 
     /**
-     * 
-     * @return create_time 
+     * @return salt
+     */
+    public String getSalt() {
+        return salt;
+    }
+
+    /**
+     * @param salt
+     */
+    public void setSalt(String salt) {
+        this.salt = salt == null ? null : salt.trim();
+    }
+
+    /**
+     * @return token
+     */
+    public String getToken() {
+        return token;
+    }
+
+    /**
+     * @param token
+     */
+    public void setToken(String token) {
+        this.token = token == null ? null : token.trim();
+    }
+
+    /**
+     * @return expire_date
+     */
+    public Date getExpireDate() {
+        return expireDate;
+    }
+
+    /**
+     * @param expireDate
+     */
+    public void setExpireDate(Date expireDate) {
+        this.expireDate = expireDate;
+    }
+
+    /**
+     * @return create_time
      */
     public Date getCreateTime() {
         return createTime;
     }
 
     /**
-     * 
-     * @param createTime 
+     * @param createTime
      */
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
     /**
-     * 
-     * @return update_time 
+     * @return update_time
      */
     public Date getUpdateTime() {
         return updateTime;
     }
 
     /**
-     * 
-     * @param updateTime 
+     * @param updateTime
      */
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
@@ -131,6 +145,9 @@ public class User implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", userName=").append(userName);
         sb.append(", password=").append(password);
+        sb.append(", salt=").append(salt);
+        sb.append(", token=").append(token);
+        sb.append(", expireDate=").append(expireDate);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
@@ -151,10 +168,13 @@ public class User implements Serializable {
         }
         User other = (User) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getUserName() == null ? other.getUserName() == null : this.getUserName().equals(other.getUserName()))
-            && (this.getPassword() == null ? other.getPassword() == null : this.getPassword().equals(other.getPassword()))
-            && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
-            && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
+                && (this.getUserName() == null ? other.getUserName() == null : this.getUserName().equals(other.getUserName()))
+                && (this.getPassword() == null ? other.getPassword() == null : this.getPassword().equals(other.getPassword()))
+                && (this.getSalt() == null ? other.getSalt() == null : this.getSalt().equals(other.getSalt()))
+                && (this.getToken() == null ? other.getToken() == null : this.getToken().equals(other.getToken()))
+                && (this.getExpireDate() == null ? other.getExpireDate() == null : this.getExpireDate().equals(other.getExpireDate()))
+                && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
+                && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
     }
 
     @Override
@@ -164,6 +184,9 @@ public class User implements Serializable {
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getUserName() == null) ? 0 : getUserName().hashCode());
         result = prime * result + ((getPassword() == null) ? 0 : getPassword().hashCode());
+        result = prime * result + ((getSalt() == null) ? 0 : getSalt().hashCode());
+        result = prime * result + ((getToken() == null) ? 0 : getToken().hashCode());
+        result = prime * result + ((getExpireDate() == null) ? 0 : getExpireDate().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         return result;

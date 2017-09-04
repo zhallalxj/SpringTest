@@ -10,30 +10,22 @@
     http://www.springframework.org/schema/context/spring-context.xsd">
 
 
-    <s:global-method-security pre-post-annotations="enabled" proxy-target-class="true" />
+    <s:global-method-security pre-post-annotations="enabled" proxy-target-class="true"/>
 
-    <context:component-scan base-package="org.zh.security.security" />
+    <context:component-scan base-package="org.zh.security.security"/>
 
-    <s:http pattern="/static/**" security="none" />
-    <s:http pattern="/swagger-ui.html" security="none" />
-    <s:http pattern="/denied.jsp" security="none" />
-
+    <s:http pattern="/static/**" security="none"/>
+    <s:http pattern="/swagger-ui.html" security="none"/>
+    <s:http pattern="/denied.jsp" security="none"/>
 
 
     <s:http auto-config="false" use-expressions="true"
             entry-point-ref="authenticationEntryPoint" authentication-manager-ref="userAuthenticationManager">
-<!--
-        <s:intercept-url pattern="/admin/**" access="hasAuthority('ROLE_STARF')" />
-        <s:intercept-url pattern="/v/guild/**"  access="isAuthenticated()" />
-        <s:intercept-url pattern="/v/cp/**"  access="isAuthenticated()" />
-        <s:intercept-url pattern="/work/log/**"  access="hasAnyAuthority('ROLE_STARF,ROLE_WORK_STARF,ROLE_WORK')" />
-        <s:intercept-url pattern="/v/work/**"  access="hasAnyAuthority('ROLE_WORK_STARF,ROLE_WORK')" />-->
-
 
         <!-- 表示匿名用户可以访问 -->
         <!--<s:intercept-url  pattern="/signin.html"  access="isAnonymous()" />-->
-        <s:intercept-url pattern="/**" access="permitAll" />
-        <s:access-denied-handler error-page="/denied.jsp" />
+        <s:intercept-url pattern="/**" access="permitAll"/>
+        <s:access-denied-handler error-page="/denied.jsp"/>
 
         <s:form-login
                 login-page="/login.html"
@@ -45,12 +37,16 @@
 
         <s:logout invalidate-session="true" logout-success-url="/login.html" delete-cookies="JSESSIONID"/>
 
-        <s:custom-filter ref="loginFilter"  before="FORM_LOGIN_FILTER"/>
+        <s:custom-filter ref="loginFilter" before="FORM_LOGIN_FILTER"/>
 
         <!--<s:access-denied-handler ref="adminAccessDenied" />-->
 
-        <s:csrf disabled="true" />
-
+        <s:csrf disabled="true"/>
+        <s:remember-me data-source-ref="dataSource"
+                       token-validity-seconds="1209600"
+                       remember-me-parameter="remember-me"
+                       user-service-ref="userDetailsService"/>
+        <!--<s:remember-me key="myCookie" user-service-ref="userDetailsService"/>-->
         <s:headers>
             <s:frame-options disabled="true"/>
             <s:hsts disabled="true"/>
@@ -60,7 +56,7 @@
     </s:http>
 
     <s:authentication-manager alias="myAuthenticationManager">
-        <s:authentication-provider user-service-ref="userDetailsService" />
+        <s:authentication-provider user-service-ref="userDetailsService"/>
     </s:authentication-manager>
 
     <!--<bean id="adminAccessDenied" class="org.zh.security.handler.AdminAccessDeniedHandler">
@@ -72,19 +68,20 @@
           class="org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint">
         <constructor-arg>
             <map>
-                <entry key-ref="nonAjaxRequestMatcher" value-ref="loginUrlAuthenticationEntryPoint" />
+                <entry key-ref="nonAjaxRequestMatcher" value-ref="loginUrlAuthenticationEntryPoint"/>
             </map>
         </constructor-arg>
-        <property name="defaultEntryPoint" ref="ajaxAuthenticationEntryPoint" />
+        <property name="defaultEntryPoint" ref="ajaxAuthenticationEntryPoint"/>
     </bean>
 
-    <bean id="ajaxAuthenticationEntryPoint" class="org.zh.security.handler.MyAjaxLoginUrlAuthenticationEntryPoint" />
+    <bean id="ajaxAuthenticationEntryPoint" class="org.zh.security.handler.MyAjaxLoginUrlAuthenticationEntryPoint"/>
 
-    <bean id="loginUrlAuthenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
-        <constructor-arg value="/login.html" />
+    <bean id="loginUrlAuthenticationEntryPoint"
+          class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <constructor-arg value="/login.html"/>
     </bean>
 
-    <bean id="nonAjaxRequestMatcher" class="org.zh.security.handler.NonAjaxRequestMatcher" />
+    <bean id="nonAjaxRequestMatcher" class="org.zh.security.handler.NonAjaxRequestMatcher"/>
 
 
     <!-- 用户 自定义service -->
@@ -97,13 +94,13 @@
     </bean>
 
     <s:authentication-manager id="userAuthenticationManager">
-        <s:authentication-provider ref="authenticationProvider" />
+        <s:authentication-provider ref="authenticationProvider"/>
     </s:authentication-manager>
 
     <bean id="authenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
-        <property name="hideUserNotFoundExceptions" value="false" />
-        <property name="userDetailsService" ref="userDetailsService" />
-        <property name="passwordEncoder" ref="encoder" />
+        <property name="hideUserNotFoundExceptions" value="false"/>
+        <property name="userDetailsService" ref="userDetailsService"/>
+        <property name="passwordEncoder" ref="encoder"/>
     </bean>
 
 
