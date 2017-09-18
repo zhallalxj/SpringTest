@@ -1,9 +1,9 @@
-package org.zh.Exception;
+package org.zh.exception;
 
 /**
- * @author Li ShaoQing
+ * @author ZhaoHang
  */
-public class AuthorizationException extends RuntimeException {
+public class AuthorizationException extends Exception {
 
     public AuthorizationException() {
         super();

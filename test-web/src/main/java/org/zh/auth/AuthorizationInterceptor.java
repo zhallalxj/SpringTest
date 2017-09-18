@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-import org.zh.Exception.AuthorizationException;
 import org.zh.constants.CommonConstants;
+import org.zh.exception.AccountNotExistException;
+import org.zh.exception.TokenExpiredException;
+import org.zh.exception.UserNotLoginException;
+import org.zh.service.UserDetails;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -20,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Li ShaoQing
+ * @author ZhaoHang
  */
 public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
 
@@ -41,10 +43,10 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
     ---------------------------------*/
 
     @Autowired
-    AuthorizationTokenValidate authorizationTokenValidate;
+    private AuthorizationTokenValidate authorizationTokenValidate;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         logger.debug("Authentication");
         if (!(handler instanceof HandlerMethod))
             return true; // not HandlerMethod return. eg. js css or other request url
@@ -52,45 +54,44 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
         HandlerMethod handler2 = (HandlerMethod) handler;
         Authentication authentication = handler2.getMethodAnnotation(Authentication.class);
 
+        if (null == authentication) return true;   //没有声明认证,放行
 
 
-        if (null == authentication)  return true;             //没有声明权限,放行
+        String token = request.getParameter(CommonConstants.AUTH_TOKEN);
 
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            t(request, response,handler2);
-            return false;
-        }
-
-        String token = null;
-        for (Cookie cookie : cookies) {
-            if (CommonConstants.AUTH_TOKEN.equals(cookie.getName())){
-                token = cookie.getValue();
-                break;
+        if (null != token) {
+            try {
+                authorizationTokenValidate.validate(token);
+                return true;
+            } catch (AccountNotExistException e) {
+                writeMessage(response, 10010, "用户账户不存在");
+                return false;
+            } catch (TokenExpiredException e) {
+                writeMessage(response, 10010, "用户认证失效");
+                return false;
             }
-        }
-        if (token == null) {
-            t(request, response,handler2);
-            return false;
         }
 
         try {
-            authorizationTokenValidate.validate(token);
-        } catch (AuthorizationException e) {
-            //  验证失败 跳转到登录页面。根据不同的验证失败异常，可做一些个性化处理
-            for (Cookie cookie : cookies) {
-                Cookie c = new Cookie(cookie.getName(), cookie.getValue());
-                c.setMaxAge(0);
-                c.setPath("/");
-                c.setDomain("localhost");
-                c.setHttpOnly(true);
-                response.addCookie(c);
-            }
-            response.sendRedirect(redirectUrl(request.getRequestURI()));
+            UserDetails.getCustomUserDetails();
+        } catch (UserNotLoginException e) {
+            t(request, response, handler2);
             return false;
         }
 
         return true;
+    }
+
+    private void writeMessage(HttpServletResponse response, int errorCode, String message) throws IOException {
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/plain");
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("code", errorCode);
+        resultMap.put("message", message);
+
+        response.getWriter().write(new Gson().toJson(resultMap));
+        response.getWriter().close();
     }
 
     private String redirectUrl(String requestURI) {
@@ -109,22 +110,14 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
         boolean isAjax = isAjaxRequest(request);
         ResponseBody responseBody = handler2.getMethodAnnotation(ResponseBody.class);
         boolean isResponseBody = true;
-        if (null == responseBody)  isResponseBody =  false;
+        if (null == responseBody) isResponseBody = false;
 
-        if(!isResponseBody){
-			/*非ajax 请求处理*/
+        if (!isResponseBody) {
+            /*非ajax 请求处理*/
             response.sendRedirect(redirectUrl(request.getRequestURI()));
-        }else{
-        	/*ajax 请求处理*/
-            response.setCharacterEncoding("UTF-8");
-            response.setContentType("text/plain");
-
-            Map<String,Object> resultMap = new HashMap<>();
-            resultMap.put("code",100010);
-            resultMap.put("message","权限不足");
-
-            response.getWriter().write(new Gson().toJson(resultMap));
-            response.getWriter().close();
+        } else {
+            /*ajax 请求处理*/
+            writeMessage(response, 10010, "请登录后再操作");
 
         }
     }

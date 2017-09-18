@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,11 +21,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.zh.bean.CustomUserDetails;
 import org.zh.bean.User;
 import org.zh.bean.UserExample;
+import org.zh.constants.CommonConstants;
+import org.zh.exception.AccountNotExistException;
+import org.zh.exception.TokenExpiredException;
+import org.zh.exception.UserNotLoginException;
+import org.zh.exception.WrongPasswordException;
 import org.zh.service.IUserService;
 import org.zh.utils.BCryptUtil;
 import org.zh.utils.CustomResponse;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
 
@@ -39,7 +45,7 @@ import java.util.Date;
 @RequestMapping(value = "/")
 public class TestController {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(TestController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestController.class);
 
     @Autowired
     private IUserService userService;
@@ -48,8 +54,8 @@ public class TestController {
     private AuthenticationManager userAuthenticationManager;
 
     @ResponseBody
-    @RequestMapping(value = "login_ajax",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
-    public String login(@RequestParam String username, @RequestParam String password, HttpServletRequest request){
+    @RequestMapping(value = "login_ajax", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+    public String login(@RequestParam String username, @RequestParam String password, HttpServletRequest request) {
         CustomResponse customResponse = new CustomResponse();
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(username, password);
         CustomUserDetails userDetails;
@@ -76,6 +82,71 @@ public class TestController {
         return customResponse.getSuccessJson("登录成功");
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/loginToken", method = {RequestMethod.GET, RequestMethod.POST}, produces = "application/json;charset=utf-8")
+    @ApiOperation(value = "登录", notes = "登录")
+    public String loginToken(@RequestParam String userName,
+                             @RequestParam String password,
+                             @RequestParam(value = "rememberMe", required = false) boolean rememberMe,
+                             HttpServletResponse response) {
+        CustomResponse customResponse = new CustomResponse();
+
+
+        try {
+            User user = userService.login(userName, password, rememberMe);
+            customResponse.addValue("userName", user.getUserName());
+            customResponse.addValue("token", user.getToken());
+
+            /*response.addHeader("Set-Cookie", CommonUtil.generatorCookie(CommonConstants.AUTH_TOKEN, user.getToken(),
+                    user.getExpireDate().toString(),
+                    propertiesFileUtil.get("token.domain"), propertiesFileUtil.get("token.path")));*/
+        } catch (AccountNotExistException e) {
+            return customResponse.getErrorJson("用户不存在");
+        } catch (WrongPasswordException e) {
+            return customResponse.getErrorJson("密码错误");
+        }
+
+
+        return customResponse.getSuccessJson("登录成功");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/getUserInfo", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/json;charset=utf-8")
+    @org.zh.auth.Authentication
+    @ApiOperation(value = "查询", notes = "查询")
+    public String getUserInfo(HttpServletRequest request) {
+        CustomResponse customResponse = new CustomResponse();
+
+        User user;
+        try {
+            user = userService.searchUser(request);
+        } catch (UserNotLoginException e) {
+            return customResponse.getErrorJson(e.getMessage(),e.getErrorCode());
+        } catch (AccountNotExistException | TokenExpiredException e) {
+            return customResponse.getErrorJson(e.getMessage());
+        }
+
+        customResponse.addValue("user", user);
+
+        return customResponse.toJSONString();
+    }
+
+
+
+    private String searchAuthToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        String token = null;
+        if (cookies != null && cookies.length > 0) {
+            for (Cookie cookie : cookies) {
+                if (CommonConstants.AUTH_TOKEN.equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        return token;
+    }
+
     @RequestMapping(value = "register", method = RequestMethod.POST)
     public String register(@RequestParam String username,
                            @RequestParam String password, Model model) {
@@ -84,9 +155,9 @@ public class TestController {
         UserExample.Criteria criteria = userExample.createCriteria();
         criteria.andUserNameEqualTo(username);
         User user = userService.selectFirstByExample(userExample);
-        if(user != null){
-            model.addAttribute("message","用户已存在");
-        }else {
+        if (user != null) {
+            model.addAttribute("message", "用户已存在");
+        } else {
             user = new User();
             user.setUserName(username);
             user.setPassword(BCryptUtil.BCryptEncode(password));
@@ -94,9 +165,8 @@ public class TestController {
             user.setUpdateTime(new Date());
             userService.insertSelective(user);
 
-            model.addAttribute("message","注册成功");
+            model.addAttribute("message", "注册成功");
         }
-
 
 
         return "/signin";

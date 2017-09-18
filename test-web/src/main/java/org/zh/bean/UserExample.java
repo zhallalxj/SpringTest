@@ -543,6 +543,126 @@ public class UserExample implements Serializable {
             return (Criteria) this;
         }
 
+        public Criteria andLastLoginDateIsNull() {
+            addCriterion("last_login_date is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastLoginDateIsNotNull() {
+            addCriterion("last_login_date is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastLoginDateEqualTo(Date value) {
+            addCriterion("last_login_date =", value, "lastLoginDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastLoginDateNotEqualTo(Date value) {
+            addCriterion("last_login_date <>", value, "lastLoginDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastLoginDateGreaterThan(Date value) {
+            addCriterion("last_login_date >", value, "lastLoginDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastLoginDateGreaterThanOrEqualTo(Date value) {
+            addCriterion("last_login_date >=", value, "lastLoginDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastLoginDateLessThan(Date value) {
+            addCriterion("last_login_date <", value, "lastLoginDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastLoginDateLessThanOrEqualTo(Date value) {
+            addCriterion("last_login_date <=", value, "lastLoginDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastLoginDateIn(List<Date> values) {
+            addCriterion("last_login_date in", values, "lastLoginDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastLoginDateNotIn(List<Date> values) {
+            addCriterion("last_login_date not in", values, "lastLoginDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastLoginDateBetween(Date value1, Date value2) {
+            addCriterion("last_login_date between", value1, value2, "lastLoginDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andLastLoginDateNotBetween(Date value1, Date value2) {
+            addCriterion("last_login_date not between", value1, value2, "lastLoginDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginDateIsNull() {
+            addCriterion("login_date is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginDateIsNotNull() {
+            addCriterion("login_date is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginDateEqualTo(Date value) {
+            addCriterion("login_date =", value, "loginDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginDateNotEqualTo(Date value) {
+            addCriterion("login_date <>", value, "loginDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginDateGreaterThan(Date value) {
+            addCriterion("login_date >", value, "loginDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginDateGreaterThanOrEqualTo(Date value) {
+            addCriterion("login_date >=", value, "loginDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginDateLessThan(Date value) {
+            addCriterion("login_date <", value, "loginDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginDateLessThanOrEqualTo(Date value) {
+            addCriterion("login_date <=", value, "loginDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginDateIn(List<Date> values) {
+            addCriterion("login_date in", values, "loginDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginDateNotIn(List<Date> values) {
+            addCriterion("login_date not in", values, "loginDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginDateBetween(Date value1, Date value2) {
+            addCriterion("login_date between", value1, value2, "loginDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andLoginDateNotBetween(Date value1, Date value2) {
+            addCriterion("login_date not between", value1, value2, "loginDate");
+            return (Criteria) this;
+        }
+
         public Criteria andCreateTimeIsNull() {
             addCriterion("create_time is null");
             return (Criteria) this;
@@ -668,7 +788,7 @@ public class UserExample implements Serializable {
      * 描述:t_user表的实体类
      * @version
      * @author:  ZhaoHang
-     * @创建时间: 2017-08-25
+     * @创建时间: 2017-09-07
      */
     public static class Criteria extends GeneratedCriteria implements Serializable {
 

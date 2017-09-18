@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.zh.auth.Digests;
+import org.zh.auth.Encodes;
 import org.zh.bean.User;
 import org.zh.bean.UserExample;
 import org.zh.service.IUserService;
@@ -75,6 +77,9 @@ public class UserController {
         User user1 = userService.selectFirstByExample(userExample);
 
         if(user1 != null) return customResponse.getErrorJson("用户名重复");
+
+        byte[] salt = Digests.generateSalt(8);
+        user.setSalt(Encodes.encodeHex(salt));
 
         user.setPassword(BCryptUtil.BCryptEncode(user.getPassword()));
         user.setCreateTime(new Date());

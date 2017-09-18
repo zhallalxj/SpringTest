@@ -43,6 +43,9 @@ public class CustomUserServiceImpl implements UserDetailsService {
                 true, authorities) {
         };
         customUserDetails.setId(user.getId());
+        customUserDetails.setSalt(user.getSalt());
+        customUserDetails.setToken(user.getToken());
+        customUserDetails.setExpireDate(user.getExpireDate());
 
         return customUserDetails;
     }

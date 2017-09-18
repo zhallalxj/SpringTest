@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.ShardedJedis;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -87,15 +86,36 @@ public class RedisUtil {
         }
     }
 
-    public <T> T getTokenFromRedis(String key, Class<T> c) {
+    public static <T> T getData(String key, Class<T> c) {
         T t;
-        try{
+        try {
             t = JsonUtil.toJson(getJedis().get(key), c);
-        } catch (Exception e){
+        } catch (Exception e) {
+            _log.error("getData key = {},Exception = {}", key, e);
             return null;
         }
 
         return t;
+    }
+
+    public static void addData(String key, int expireSeconds, String value) {
+        try {
+            getJedis().setex(key, expireSeconds, value);
+        } catch (Exception e) {
+            _log.error("addData key = {},expireSeconds = {},value = {},Exception = {}",
+                    key, expireSeconds, value, e);
+        }
+    }
+
+    public static void updateData(String key, String value) {
+        try {
+            Jedis jedis = getJedis();
+            long expireSeconds = jedis.ttl(key);
+            jedis.setex(key, (int) expireSeconds, value);
+        } catch (Exception e) {
+            _log.error("updateData key = {},value = {},Exception = {}",
+                    key, value, e);
+        }
     }
 
     /**
